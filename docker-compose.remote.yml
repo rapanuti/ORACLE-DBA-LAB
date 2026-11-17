@@ -1,0 +1,21 @@
+# Modo "Oracle remoto": no levanta Oracle local (útil si tu equipo no puede
+# ejecutar la imagen). Configura LAB_DB_HOST/PORT/SERVICE en .env apuntando a
+# un esquema de PRÁCTICA propio, y/o EXTERNAL_DB_* para una base de solo lectura.
+#   docker compose -f docker-compose.remote.yml up -d --build
+name: oracle-dba-lab-remote
+
+services:
+  backend:
+    build: ./backend
+    env_file: .env
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    restart: unless-stopped
